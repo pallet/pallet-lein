@@ -7,9 +7,29 @@
 
    For a list of tasks
      lein pallet help"
-  [project & args]
-  (leiningen.compile/eval-in-project
-   project
-   `(do
-      (require 'pallet.main)
-      (pallet.main/-main ~@args))))
+  ([project & args]
+     (if (and project (map? project))
+       (leiningen.compile/eval-in-project
+        project
+        `(try
+           (require 'pallet.main)
+           ((ns-resolve 'pallet.main (symbol "-main")) ~@args)
+           (do
+             (println "failed to resolve " 'pallet.main (symbol "-main"))
+             (System/exit 1))
+           (catch java.io.FileNotFoundException e#
+             (println "Error loading pallet: " (.getMessage e#))
+             (println "You need to have pallet as a project dependency")
+             (println "or installed in ~/.lein/plugins")
+             (System/exit 1))))
+       (try
+         (require 'pallet.main)
+         (apply (ns-resolve (the-ns 'pallet.main) '-main) args)
+         (catch java.io.FileNotFoundException e#
+           (println "Error loading pallet: " (.getMessage e#))
+           (println "You need to install pallet and it's dependencies in")
+           (println "~/.lein/plugins in order to use the lein-pallet plugin")
+           (println "outside of a project.")
+           (System/exit 1)))))
+  ([arg] (pallet nil arg))
+  ([] (pallet nil)))
