@@ -11,17 +11,19 @@
      (if (and project (map? project))
        (leiningen.compile/eval-in-project
         project
-        `(try
-           (require 'pallet.main)
-           ((ns-resolve 'pallet.main (symbol "-main")) ~@args)
-           (do
-             (println "failed to resolve " 'pallet.main (symbol "-main"))
-             (System/exit 1))
-           (catch java.io.FileNotFoundException e#
-             (println "Error loading pallet: " (.getMessage e#))
-             (println "You need to have pallet as a project dependency")
-             (println "or installed in ~/.lein/plugins")
-             (System/exit 1))))
+        `(do
+           (try
+             (require 'pallet.main)
+             (catch java.io.FileNotFoundException e#
+               (println "Error loading pallet: " (.getMessage e#))
+               (println "You need to have pallet as a project dependency")
+               (println "or installed in ~/.lein/plugins")
+               (System/exit 1)))
+           (if-let [m# (ns-resolve 'pallet.main (symbol "-main"))]
+             (m# ~@args)
+             (do
+               (println "failed to resolve " 'pallet.main (symbol "-main"))
+               (System/exit 1)))))
        (try
          (require 'pallet.main)
          (apply (ns-resolve (the-ns 'pallet.main) '-main) args)
