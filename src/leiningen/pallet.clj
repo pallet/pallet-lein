@@ -20,7 +20,7 @@
                (println "or installed in ~/.lein/plugins")
                (System/exit 1)))
            (if-let [m# (ns-resolve 'pallet.main (symbol "-main"))]
-             (m# ~@args)
+             (m# ~@args "-project-options" ~(pr-str project))
              (do
                (println "failed to resolve " 'pallet.main (symbol "-main"))
                (System/exit 1)))))
