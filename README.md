@@ -17,7 +17,7 @@ For a list of pallet tasks,
 
 Add the plugin to your `project.clj` file.
 
-    :dev-dependencies [[pallet-lein "0.1.0-SNAPSHOT"]]
+    :dev-dependencies [[pallet-lein "0.2.0"]]
 
 ## License
 
