@@ -26,12 +26,12 @@
                (System/exit 1)))))
        (try
          (require 'pallet.main)
-         (apply (ns-resolve (the-ns 'pallet.main) '-main) args)
+         ((ns-resolve (the-ns 'pallet.main) 'pallet-task) args)
          (catch java.io.FileNotFoundException e#
            (println "Error loading pallet: " (.getMessage e#))
            (println "You need to install pallet and it's dependencies in")
            (println "~/.lein/plugins in order to use the lein-pallet plugin")
            (println "outside of a project.")
-           (System/exit 1)))))
+           1))))
   ([arg] (pallet nil arg))
   ([] (pallet nil)))
