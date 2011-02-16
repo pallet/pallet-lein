@@ -17,10 +17,10 @@ For a list of pallet tasks,
 
 Add the plugin to your `project.clj` file.
 
-    :dev-dependencies [[org.cloudhoist/pallet-lein "0.2.0"]]
+    :dev-dependencies [[org.cloudhoist/pallet-lein "0.4.0"]]
 
 ## License
 
-Copyright (C) 2010 Hugo Duncan
+Copyright (C) 2010, 2010 Hugo Duncan
 
 Distributed under the Eclipse Public License.
