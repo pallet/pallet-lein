@@ -12,23 +12,29 @@
        (leiningen.compile/eval-in-project
         project
         `(do
-           (try
-             (require 'pallet.main)
-             (catch java.io.FileNotFoundException e#
-               (println "Error loading pallet: " (.getMessage e#))
-               (println "You need to have pallet as a project dependency")
-               (println "or installed in ~/.lein/plugins")
-               (System/exit 1)))
-           (if-let [m# (ns-resolve 'pallet.main (symbol "-main"))]
-             (m# ~@args "-project-options" ~(pr-str project))
-             (do
-               (println "failed to resolve " 'pallet.main (symbol "-main"))
-               (System/exit 1)))))
+
+           (if-let [rv# (try
+                          (require '~'pallet.main)
+                          (catch java.io.FileNotFoundException e#
+                            (binding [*out* *err*]
+                              (println "Error loading pallet: " (.getMessage e#))
+                              (println "You need to have pallet as a project")
+                              (println "dependency or installed in ~/.lein/plugins"))
+                            1))]
+             rv#
+             (if-let [m# (ns-resolve
+                          (the-ns '~'pallet.main)
+                          '~'pallet-task)]
+               (m# (concat ["-project-options" ~(pr-str project)] [~@args]))
+               (do
+                 (binding [*out* *err*]
+                   (println "failed to resolve pallet.main/pallet-task"))
+                 1)))))
        (try
          (require 'pallet.main)
          ((ns-resolve (the-ns 'pallet.main) 'pallet-task) args)
-         (catch java.io.FileNotFoundException e#
-           (println "Error loading pallet: " (.getMessage e#))
+         (catch java.io.FileNotFoundException e
+           (println "Error loading pallet: " (.getMessage e))
            (println "You need to install pallet and it's dependencies in")
            (println "~/.lein/plugins in order to use the lein-pallet plugin")
            (println "outside of a project.")
