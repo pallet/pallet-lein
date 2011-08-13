@@ -25,11 +25,17 @@
              (if-let [m# (ns-resolve
                           (the-ns '~'pallet.main)
                           '~'pallet-task)]
-               (m# (concat ["-project-options" ~(pr-str project)] [~@args]))
+               (let [env# (pallet-lein.configleaf/get-environment '~project)]
+                 (m# (concat ["-project-options" ~(pr-str project)] [~@args])
+                     :environment env#))
                (do
                  (binding [*out* *err*]
                    (println "failed to resolve pallet.main/pallet-task"))
-                 1)))))
+                 1))))
+        nil
+        nil
+        '(require 'pallet-lein.configleaf)
+        )
        (try
          (require 'pallet.main)
          ((ns-resolve (the-ns 'pallet.main) 'pallet-task) args)
