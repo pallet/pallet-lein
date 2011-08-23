@@ -34,8 +34,7 @@
                  1))))
         nil
         nil
-        '(require 'pallet-lein.configleaf)
-        )
+        '(require 'pallet-lein.configleaf))
        (try
          (require 'pallet.main)
          ((ns-resolve (the-ns 'pallet.main) 'pallet-task) args)

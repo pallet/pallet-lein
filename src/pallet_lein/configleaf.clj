@@ -7,14 +7,8 @@
            (catch java.io.FileNotFoundException e
              false))
     ;; First we have to dynamically resolve the functions we need.
-    (let [get-current-config-fn (ns-resolve (the-ns 'configleaf.core)
-                                            'get-current-config)
-          config-namespace-fn   (ns-resolve (the-ns 'configleaf.core)
-                                            'config-namespace)
-          configleaf-data       (:configleaf project)
-          config-ns             (config-namespace-fn configleaf-data)
-          curr-cfg              (get-current-config-fn configleaf-data)
-          curr-cfg-data         (get-in configleaf-data
-                                        [:configurations
-                                         curr-cfg])]
-      (:pallet/environment curr-cfg-data))))
+    (let [get-current-profile-fn (ns-resolve (the-ns 'configleaf.core)
+                                             'get-current-profile)
+          cl-config       (:configleaf project)
+          curr-profile    (get-current-profile-fn cl-config)]
+      (get-in cl-config [:profiles curr-profile :pallet/environment]))))
