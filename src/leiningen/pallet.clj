@@ -40,7 +40,9 @@
                           (the-ns '~'pallet.main)
                           '~'pallet-task)]
                (try
-                 (m# (concat ["-project-options" ~(pr-str project)] [~@args]))
+                 (let [env# (pallet-lein.configleaf/get-environment '~project)]
+                   (m# (concat ["-project-options" ~(pr-str project)] [~@args])
+                       :environment env#))
                  (finally
                   ~(when (and (bound? #'leiningen.test/*exit-after-tests*)
                               leiningen.test/*exit-after-tests*)
@@ -48,7 +50,10 @@
                (do
                  (binding [*out* *err*]
                    (println "failed to resolve pallet.main/pallet-task"))
-                 1)))))
+                 1))))
+        nil
+        nil
+        '(require 'pallet-lein.configleaf))
        (maybe-shutdown-agents
         (require 'pallet.main)
         ((ns-resolve (the-ns 'pallet.main) 'pallet-task) args)
