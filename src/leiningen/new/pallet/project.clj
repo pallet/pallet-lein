@@ -1,4 +1,4 @@
-(defproject {{name}} {{project-version}}
+(defproject {{name}} "{{project-version}}"
   :description "FIXME Pallet project for {{name}}"
   :dependencies [[org.cloudhoist/pallet "{{version}}"]
                  {{#with-automated-admin-user-dependency}}
