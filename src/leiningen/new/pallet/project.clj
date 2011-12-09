@@ -1,6 +1,6 @@
 (defproject {{name}} "{{project-version}}"
   :description "FIXME Pallet project for {{name}}"
-  :dependencies [[org.cloudhoist/pallet "{{version}}"]
+  :dependencies [[org.cloudhoist/pallet "{{pallet-version}}"]
                  {{#with-automated-admin-user-dependency}}
                  [org.cloudhoist/automated-admin-user "0.6.0"]
                  {{/with-automated-admin-user-dependency}}
@@ -8,7 +8,7 @@
                  [org.jclouds.driver/jclouds-slf4j "1.0.0"]
                  [ch.qos.logback/logback-core "1.0.0"]
                  [ch.qos.logback/logback-classic "1.0.0"]]
-  :dev-dependencies [[org.cloudhoist/pallet "{{version}}" :type "test-jar"]
+  :dev-dependencies [[org.cloudhoist/pallet "{{pallet-version}}" :type "test-jar"]
                      {{#with-vmfest}}
                      [vmfest "{{vmfest-version}}"]
                      {{/with-vmfest}}
