@@ -33,11 +33,16 @@
                                  (println
                                   "dependency or installed in ~/.lein/plugins"))
                                1))]
+                ;; If there was an error, then the return value is 1 and that is
+                ;; returned.
                 rv#
+                ;; If the require worked, the return value was nil and the else
+                ;; clause happens.
                 (if-let [m# (ns-resolve (the-ns '~'pallet.main) '~'pallet-task)]
                   (try
                     (let [env# (:pallet/environment (read-string ~project-str))]
-                      (m# (concat ["-project-options" ~(pr-str project)] [~@args])
+                      (m# (concat ["-project-options" ~(pr-str project)]
+                                  [~@args])
                           :environment env#))
                     (finally
                      ~(when (and (bound? #'leiningen.test/*exit-after-tests*)
