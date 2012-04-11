@@ -40,8 +40,13 @@
                 ;; clause happens.
                 (if-let [m# (ns-resolve (the-ns '~'pallet.main) '~'pallet-task)]
                   (try
-                    (let [env# (:pallet/environment (read-string ~project-str))]
+                    (let [project# (read-string ~project-str)
+                          env# (:pallet/environment project#)
+                          profiles# (:pallet/profiles project#)]
                       (m# (concat ["-project-options" ~(pr-str project)]
+                                  (if profiles#
+                                    ["-P" (clojure.string/join
+                                           "," (map name profiles#))])
                                   [~@args])
                           :environment env#))
                     (finally
@@ -53,7 +58,7 @@
                       (println "failed to resolve pallet.main/pallet-task"))
                     1))))]
        (if (and project (map? project))
-         (compat/eval-in-project project main-form nil)
+         (compat/eval-in-project project main-form `(require 'clojure.string))
          (maybe-shutdown-agents
           (require 'pallet.main)
           ((ns-resolve (the-ns 'pallet.main) 'pallet-task) args)
