@@ -19,11 +19,11 @@ For a list of pallet tasks,
 
 Either install with `lein plugin`:
 
-    lein plugin install org.cloudhoist/pallet-lein "0.4.2"
+    lein plugin install org.cloudhoist/pallet-lein "0.5.0"
 
 or, add the plugin to your `project.clj` file.
 
-    :dev-dependencies [[org.cloudhoist/pallet-lein "0.4.2"]]
+    :dev-dependencies [[org.cloudhoist/pallet-lein "0.5.0"]]
 
 ## License
 

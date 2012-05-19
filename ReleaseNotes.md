@@ -1,5 +1,10 @@
 # Release Notes
 
+## 0.5.0
+
+- Update to run in lein2: Remove configleaf support, add pallet-lein.compat
+  namespace with cross-version EIP, update pallet task code.
+
 ## 0.4.2
 
 - remove lein-newnew templates
