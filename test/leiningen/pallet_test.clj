@@ -12,10 +12,14 @@
 
 (deftest pallet-with-project-and-cmd-test
   (is (= 0 (pallet/pallet
-            {:compile-path "classes"
-             :library-path "lib"
+            {:source-paths ["src"]
+             :resource-paths ["resources"]
+             :test-paths ["test"]
+             :native-path "target/native"
+             :compile-path "target/classes"
+             :target-path "target"
              :group "group"
              :name "name"
              :version "0.1.0"
-             :eval-in-leiningen true}
+             :eval-in :leiningen}
             "help"))))
