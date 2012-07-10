@@ -17,7 +17,6 @@ echo -n "commiting project.clj, release notes and readme.  enter to continue:" \
 && git commit -m "Updated project.clj, release notes and readme for $version" \
 && echo -n "Peform release.  enter to continue:" && read x \
 && lein2 test \
-&& lein2 jar, pom \
+&& lein2 deploy clojars \
 && git flow release finish $version \
-&& scp target/pallet-lein-${version}.jar pom.xml clojars: \
 && echo "Now push and upload to github"
