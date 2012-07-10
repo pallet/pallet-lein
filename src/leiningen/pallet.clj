@@ -19,7 +19,13 @@
    For a list of tasks
      lein pallet help"
   ([project & args]
-     (let [project-str (pr-str project)
+     (let [[project args] (if (and (map? project)
+                                   (every?
+                                    identity
+                                    (map project [:name :group :version])))
+                            [project args]
+                            [nil [project]])
+           project-str (pr-str project)
            main-form
            `(do
               (if-let [rv# (try
@@ -63,5 +69,4 @@
             (println "~/.lein/plugins in order to use the lein-pallet plugin")
             (println "outside of a project.")
             1)))))
-  ([arg] (pallet nil arg))
   ([] (pallet nil)))
