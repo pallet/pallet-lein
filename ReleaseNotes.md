@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.5.1
+
+- Fix plugin when invoked with no arguments in lein 2. Fixes #4
+
 ## 0.5.0
 
 - Update to run in lein2: Remove configleaf support, add pallet-lein.compat
