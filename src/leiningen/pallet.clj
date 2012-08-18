@@ -25,7 +25,7 @@
                                     (map project [:name :group :version])))
                             [project args]
                             [nil [project]])
-           project-str (pr-str project)
+           project-str (pr-str (dissoc project :repositories))
            main-form
            `(do
               (if-let [rv# (try
@@ -47,7 +47,7 @@
                 (if-let [m# (ns-resolve (the-ns '~'pallet.main) '~'pallet-task)]
                   (try
                     (let [env# (:pallet/environment (read-string ~project-str))]
-                      (m# (concat ["-project-options" ~(pr-str project)]
+                      (m# (concat ["-project-options" ~project-str]
                                   [~@args])
                           :environment env#))
                     (finally
