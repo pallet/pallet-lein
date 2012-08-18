@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.5.2
+
+- Fix plugin for lein's use of ordered-map in :repositories. Fixes #5.
+
 ## 0.5.1
 
 - Fix plugin when invoked with no arguments in lein 2. Fixes #4
