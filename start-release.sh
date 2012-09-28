@@ -15,6 +15,7 @@ echo "Start release of $version, previous version is $previous_version"
 echo ""
 echo ""
 
+lein test && lein1 test && \
 git flow release start $version || exit
 
 echo ""
