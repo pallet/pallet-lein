@@ -4,5 +4,6 @@
                      [org.cloudhoist/pallet "0.7.0"]]
   :profiles {:dev {:dependencies [[org.cloudhoist/pallet "0.7.0"]]}}
   :eval-in-leiningen true
+  :local-classpath-repo true
   :repositories
   {"sonatype" "https://oss.sonatype.org/content/repositories/releases/"})

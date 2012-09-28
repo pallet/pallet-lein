@@ -21,5 +21,13 @@
              :group "group"
              :name "name"
              :version "0.1.0"
-             :eval-in :leiningen}
+             :eval-in :leiningen
+             ;; lein1
+             :dependencies [['org.clojure/clojure "1.4.0"]]
+             :eval-in-leiningen true
+             :source-path "src"
+             :resource-path "resources"
+             :test-path "test"
+             :local-repo-classpath true
+             :project-root (System/getProperty "user.home")}
             "help"))))
