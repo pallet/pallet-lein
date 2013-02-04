@@ -16,7 +16,8 @@
 (defn pallet
   "Launch pallet tasks from the command line.
 
-   For a list of tasks
+   For a list of tasks:
+
      lein pallet help"
   ([project & args]
      (let [[project args] (if (and (map? project)
