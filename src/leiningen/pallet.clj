@@ -1,7 +1,9 @@
 (ns leiningen.pallet
   "Pallet command line."
-  (:require [pallet-lein.compat :as compat]
-            leiningen.test))
+ (:require
+  [leiningen.core.eval :refer [eval-in-project]]
+  [leiningen.core.project :refer [merge-profiles]]
+  leiningen.test))
 
 (defmacro maybe-shutdown-agents
   "Shutdown agents if required after body"
@@ -13,14 +15,42 @@
                  leiningen.test/*exit-after-tests*)
         (shutdown-agents)))))
 
-(defn pallet
+;; This profile will be added if there is no explicit :pallet profile.
+(defn pallet-profile [{:keys [pallet] :as project}]
+  {:source-paths (:source-paths pallet ["pallet/src"])
+   :resource-paths (:resource-paths pallet ["pallet/resources"])
+   :dependencies '[^:displace [org.cloudhoist/pallet "0.8.0-SNAPSHOT"]
+                   ^:displace [org.cloudhoist/pallet-vmfest "0.3.0-SNAPSHOT"]
+                   ^:displace [vmfest "0.3.0-SNAPSHOT"
+                               :exclusions [commons-logging]]
+                   ^:displace [org.clojars.tbatchelli/vboxjxpcom "4.2.4"]
+                   ;; [org.clojars.tbatchelli/vboxjws "4.2.4"]
+
+                   ;; we do this to get a logging configuration
+                   ;; this needs some thinking about
+                   ^:displace [org.cloudhoist/pallet-lein "0.6.0-SNAPSHOT"]
+                   ^:displace [ch.qos.logback/logback-classic "1.0.9"]]
+   :repositories
+   {"sonatype"
+    {:url "https://oss.sonatype.org/content/repositories/releases/"
+     :snapshots false}}})
+
+(defn has-profile? [project profile-kw]
+  (let [{:keys [included-profiles excluded-profiles]} (meta project)]
+    ((set (concat included-profiles excluded-profiles)) profile-kw)))
+
+(defn
+  ^{:help-arglists []}             ; suppress arguments in the default lein help
+  pallet
   "Launch pallet tasks from the command line.
-
-   For a list of tasks:
-
-     lein pallet help"
+   `lein pallet help` for more details."
   ([project & args]
-     (let [[project args] (if (and (map? project)
+     (let [project (merge-profiles
+                    project
+                    (or
+                     (seq (filter (partial has-profile? pallet) [:pallet]))
+                     [(pallet-profile project)]))
+           [project args] (if (and (map? project)
                                    (every?
                                     identity
                                     (map project [:name :group :version])))
@@ -48,19 +78,19 @@
                 (if-let [m# (ns-resolve (the-ns '~'pallet.main) '~'pallet-task)]
                   (try
                     (let [env# (:pallet/environment (read-string ~project-str))]
-                      (m# (concat ["-project-options" ~project-str]
+                      (m# (concat ["--project-options" ~project-str]
                                   [~@args])
                           :environment env#))
                     (finally
-                     ~(when (and (bound? #'leiningen.test/*exit-after-tests*)
-                                 leiningen.test/*exit-after-tests*)
-                        `(shutdown-agents))))
+                      ~(when (and (bound? #'leiningen.test/*exit-after-tests*)
+                                  leiningen.test/*exit-after-tests*)
+                         `(shutdown-agents))))
                   (do
                     (binding [*out* *err*]
-                      (println "failed to resolve pallet.main/pallet-task"))
-                    1))))]
+                      (println
+                       "failed to resolve pallet.main/pallet-task"))))))]
        (if (and project (map? project))
-         (compat/eval-in-project project main-form nil)
+         (eval-in-project project main-form nil)
          (maybe-shutdown-agents
           (require 'pallet.main)
           ((ns-resolve (the-ns 'pallet.main) 'pallet-task) args)
@@ -69,5 +99,5 @@
             (println "You need to install pallet and it's dependencies in")
             (println "~/.lein/plugins in order to use the lein-pallet plugin")
             (println "outside of a project.")
-            1)))))
+            (throw (ex-info "Error loading pallet" {} e)))))))
   ([] (pallet nil)))
