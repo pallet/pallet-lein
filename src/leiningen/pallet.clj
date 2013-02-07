@@ -77,7 +77,12 @@
                 ;; clause happens.
                 (if-let [m# (ns-resolve (the-ns '~'pallet.main) '~'pallet-task)]
                   (try
-                    (let [env# (:pallet/environment (read-string ~project-str))]
+                    (let [env# (:pallet/environment (read-string ~project-str))
+                          s# (ns-resolve
+                              (the-ns '~'pallet.main) '~'add-service)]
+                      (when s#
+                        ;; create a default vmfest provider
+                        (s# :vbox {:provider :vmfest}))
                       (m# (concat ["--project-options" ~project-str]
                                   [~@args])
                           :environment env#))
