@@ -1,6 +1,7 @@
 (ns leiningen.pallet
   "Pallet command line."
  (:require
+  [leiningen.core.main :refer [debug]]
   [leiningen.core.eval :refer [eval-in-project]]
   [leiningen.core.project :refer [make merge-profiles]]
   leiningen.test))
@@ -40,9 +41,16 @@
     {:url "https://oss.sonatype.org/content/repositories/releases/"
      :snapshots false}}})
 
-(defn has-profile? [project profile-kw]
-  (let [{:keys [included-profiles excluded-profiles]} (meta project)]
-    ((set (concat included-profiles excluded-profiles)) profile-kw)))
+(defn has-profile? [{:keys [profiles] :as project} profile-kw]
+  (let [{:keys [included-profiles excluded-profiles active-profiles]}
+        (meta project)
+
+        all-profiles (set
+                      (concat
+                       included-profiles excluded-profiles active-profiles
+                       (keys profiles)))]
+    (debug "Available profiles" all-profiles)
+    (all-profiles profile-kw)))
 
 (defn
   ^{:help-arglists []}             ; suppress arguments in the default lein help
@@ -55,9 +63,9 @@
                      {:name "pallet-lein" :group "pallet" :version "0.1.0"}))
         project (merge-profiles
                  project
-                 (or
-                  (seq (filter (partial has-profile? pallet) [:pallet]))
-                  [(pallet-profile project)]))
+                 (conj
+                  (filter (partial has-profile? project) [:pallet])
+                  (pallet-profile project)))
         [project args] (if (and (map? project)
                                 (every?
                                  identity
