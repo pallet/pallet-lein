@@ -4,8 +4,6 @@ A [leiningen](http://github.com/technomancy/leiningen) plugin for running
 [pallet](http://github.com/hugoduncan/pallet) tasks for a pallet deployment
 project.
 
-Compatible with lein 1 and 2.
-
 ## Usage
 
 A pallet deployment project needs to have pallet as a dependency.
@@ -14,18 +12,49 @@ For a list of pallet tasks,
 
     lein pallet help
 
+The task has a default set of pallet dependencies.  To override these, you can
+declare a `:pallet profile`, which will be preferred over the built in
+dependencies.
 
-## Installation (lein 1.x)
+The plugin adds `pallet/src` and `pallet/resources` to the project's classpath.
+You can override this by specifying `:source-paths` and `:resource-paths` in a
+project `:pallet` key.  For example:
 
-Either install with `lein plugin`:
+```clj
+  :pallet {:source-paths ["src-pallet"] :resource-paths []}
+```
 
-    lein plugin install org.cloudhoist/pallet-lein "0.5.2"
+### Default Pallet Dependencies
 
-or, add the plugin to your `project.clj` file.
+The plugin uses a default set of dependencies that includes
+[vmfest](https://github.com/tbatchelli/vmfest/tree/develop).  This should enable
+use of VirtualBox with no configuration.  Note that this support is broken on
+linux, due to a bug in VirtualBox, and you will have to run the `vboxwebsrv`,
+and use the `vboxjws` dependency.
 
-    :dev-dependencies [[org.cloudhoist/pallet-lein "0.5.2"]]
+### Adjusting Pallet Dependencies
 
-## Installation (lein 2)
+The plugin's pallet dependencies can be adjusted using the leiningen `:pallet`
+profile, either in your `project.clj` or `profiles.clj` files.  See the
+[leiningen documentation](https://github.com/technomancy/leiningen/blob/master/doc/PROFILES.md)
+for details on using profiles.
+
+Using this mechanism, you can add pallet crate dependencies, and providers for
+clouds such as EC2.
+
+## Installation
+
+### For pallet 0.8.0 and higher
+
+Add the plugin to your `:plugins`, either in the `:dev` profile of your
+`project.clj` file, or in the `:user` profile of your `~/.lein/profiles.clj`
+file.
+
+    :plugins [[org.cloudhoist/pallet-lein "0.6.0-beta.1"]]
+
+Requires lein 2.0.0 or higher.
+
+### For pallet 0.7.x
 
 Add the plugin to your `:plugins`, either in the `:dev` profile of your
 `project.clj` file, or in the `:user` profile of your `~/.lein/profiles.clj`
@@ -35,6 +64,6 @@ file.
 
 ## License
 
-Copyright (C) 2010, 2011, 2012 Hugo Duncan
+Copyright (C) 2010, 2011, 2012, 2013 Hugo Duncan
 
 Distributed under the Eclipse Public License.
