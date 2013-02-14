@@ -32,7 +32,7 @@
 
                    ;; we do this to get a logging configuration
                    ;; this needs some thinking about
-                   ^:displace [com.palletops/pallet-lein "0.6.0-beta.1"]
+                   ^:displace [com.palletops/pallet-lein "0.6.0-beta.2"]
                    ^:displace [ch.qos.logback/logback-classic "1.0.9"]]
    :jvm-opts ["-XX:TieredStopAtLevel=1"
               "-XX:+TieredCompilation"]
