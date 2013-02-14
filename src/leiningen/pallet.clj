@@ -53,7 +53,8 @@
     (all-profiles profile-kw)))
 
 (defn
-  ^{:help-arglists []}             ; suppress arguments in the default lein help
+  ^{:help-arglists []              ; suppress arguments in the default lein help
+    :no-project-needed true}
   pallet
   "Launch pallet tasks from the command line.
    `lein pallet help` for more details."
