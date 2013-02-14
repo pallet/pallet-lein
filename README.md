@@ -24,15 +24,43 @@ project `:pallet` key.  For example:
   :pallet {:source-paths ["src-pallet"] :resource-paths []}
 ```
 
+### Default Pallet Dependencies
+
+The plugin uses a default set of dependencies that includes
+[vmfest](https://github.com/tbatchelli/vmfest/tree/develop).  This should enable
+use of VirtualBox with no configuration.  Note that this support is broken on
+linux, due to a bug in VirtualBox, and you will have to run the `vboxwebsrv`,
+and use the `vboxjws` dependency.
+
+### Adjusting Pallet Dependencies
+
+The plugin's pallet dependencies can be adjusted using the leiningen `:pallet`
+profile, either in your `project.clj` or `profiles.clj` files.  See the
+[leiningen documentation](https://github.com/technomancy/leiningen/blob/master/doc/PROFILES.md)
+for details on using profiles.
+
+Using this mechanism, you can add pallet crate dependencies, and providers for
+clouds such as EC2.
+
 ## Installation
+
+### For pallet 0.8.0 and higher
+
+Add the plugin to your `:plugins`, either in the `:dev` profile of your
+`project.clj` file, or in the `:user` profile of your `~/.lein/profiles.clj`
+file.
+
+    :plugins [[org.cloudhoist/pallet-lein "0.6.0-beta.1"]]
+
+Requires lein 2.0.0 or higher.
+
+### For pallet 0.7.x
 
 Add the plugin to your `:plugins`, either in the `:dev` profile of your
 `project.clj` file, or in the `:user` profile of your `~/.lein/profiles.clj`
 file.
 
     :plugins [[org.cloudhoist/pallet-lein "0.5.2"]]
-
-Requires lein 2.0.0 or higher.
 
 ## License
 

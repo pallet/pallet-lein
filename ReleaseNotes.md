@@ -1,5 +1,21 @@
 # Release Notes
 
+## 0.6.0-beta.1
+
+- Use pallet 0.8.0-beta.1
+
+- Update GroupId to com.palletops
+
+- Enforce xpcom or ws, and minimum clojure version
+
+- Inject a default vmfest service
+
+- Update for lein 2 and pallet 0.8
+  Update for lein 2 error handling.  Adds the use of a :pallet profile if 
+  available, with fallback on and internal profile.  This allows the plugin
+  to work outside of a project, and still allows a project to use different
+  pallet dependencies if required.
+
 ## 0.5.2
 
 - Fix plugin for lein's use of ordered-map in :repositories. Fixes #5.
