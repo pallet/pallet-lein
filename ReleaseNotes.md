@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.6.0-beta.4
+
+- Fix enforcement of either ws or xpcom
+
 ## 0.6.0-beta.3
 
 - Update to pallet-vmfest-alpha.2
