@@ -25,7 +25,8 @@ Assumes that these libs are only every present as direct dependencies."
   [dependencies-key project]
   (debug "Dependencies before cleanup"
          dependencies-key (get project dependencies-key))
-  (let [p (update-in
+  (let [remove-dep (fn [dep s] (vec (remove #{dep} s)))
+        p (update-in
            project [dependencies-key]
            (fn check-dependencies [deps]
              (->
@@ -34,11 +35,21 @@ Assumes that these libs are only every present as direct dependencies."
                  (if (or (xpcom? dependency) (ws? dependency))
                    (if seen
                      (cond
-                      (displace? seen) [(conj deps dependency) dependency]
-                      (replace? dependency) [(conj deps dependency) dependency]
-                      :else [deps seen])
+                      (displace? seen)
+                      (do
+                        (debug seen "displaced by " dependency)
+                        [(conj (remove-dep seen deps) dependency) dependency])
+
+                      (replace? dependency)
+                      (do
+                        (debug "Replacing" seen "with" dependency)
+                        [(conj (remove-dep seen deps) dependency) dependency])
+
+                      :else (do
+                              (debug "Ignoring" dependency "as" seen "seen")
+                              [deps seen]))
                      [(conj deps dependency) dependency])
-                   [(conj deps dependency) dependency]))
+                   [(conj deps dependency) nil]))
                [[] nil]
                deps)
               first)))]

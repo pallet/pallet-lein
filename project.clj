@@ -1,4 +1,4 @@
-(defproject com.palletops/pallet-lein "0.6.0-beta.3"
+(defproject com.palletops/pallet-lein "0.6.0-beta.4"
   :description "Leiningen plugin for running Pallet tasks"
   :url "http://palletops.com"
   :license {:name "Eclipse Public License"

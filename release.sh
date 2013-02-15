@@ -46,5 +46,5 @@ echo -n "commiting project.clj, release notes and readme.  enter to continue:" \
 && echo "Now push to github. Don't forget the tags!" \
 && lein with-profile +doc doc \
 && lein with-profile +release set-version ${next_version} \
-&& git add project.clj \
+&& git add project.clj src/leiningen/pallet.clj \
 && git commit -m "Updated version for next release cycle"
