@@ -2,6 +2,7 @@
   "Plugin to hook get-classpath, and ensure vbox xpcom and ws libs are
 exclusive"
   (:require
+   [clojure.pprint :refer [pprint]]
    [robert.hooke :refer [add-hook]]
    [leiningen.core.classpath :refer [resolve-dependencies]]
    [leiningen.core.main :refer [debug]]))
@@ -23,58 +24,62 @@ exclusive"
   "Remove conflicts between virtualbox xpcom and ws libs.
 Assumes that these libs are only every present as direct dependencies."
   [dependencies-key project]
-  (debug "Dependencies before cleanup"
-         dependencies-key (get project dependencies-key))
-  (let [remove-dep (fn [dep s] (vec (remove #{dep} s)))
-        p (update-in
-           project [dependencies-key]
-           (fn check-dependencies [deps]
-             (->
-              (reduce
-               (fn check-conflict [[deps seen] dependency]
-                 (if (or (xpcom? dependency) (ws? dependency))
-                   (if seen
-                     (cond
-                      (displace? seen)
-                      (do
-                        (debug seen "displaced by " dependency)
-                        [(conj (remove-dep seen deps) dependency) dependency])
+  (when (= dependencies-key :dependencies)
+    (debug "Dependencies before cleanup" \newline
+           (with-out-str (pprint (get project dependencies-key))))
+    (let [remove-dep (fn [dep s] (vec (remove #{dep} s)))
+          p (update-in
+             project [dependencies-key]
+             (fn check-dependencies [deps]
+               (->
+                (reduce
+                 (fn check-conflict [[deps seen] dependency]
+                   (if (or (xpcom? dependency) (ws? dependency))
+                     (if seen
+                       (cond
+                        (displace? seen)
+                        (do
+                          (debug seen "displaced by " dependency)
+                          [(conj (remove-dep seen deps) dependency) dependency])
 
-                      (replace? dependency)
-                      (do
-                        (debug "Replacing" seen "with" dependency)
-                        [(conj (remove-dep seen deps) dependency) dependency])
+                        (replace? dependency)
+                        (do
+                          (debug "Replacing" seen "with" dependency)
+                          [(conj (remove-dep seen deps) dependency) dependency])
 
-                      :else (do
-                              (debug "Ignoring" dependency "as" seen "seen")
-                              [deps seen]))
-                     [(conj deps dependency) dependency])
-                   [(conj deps dependency) nil]))
-               [[] nil]
-               deps)
-              first)))]
-    (debug "Dependencies after cleanup" (get p dependencies-key))
-    p))
+                        :else (do
+                                (debug "Ignoring" dependency "as" seen "seen")
+                                [deps seen]))
+                       [(conj deps dependency) dependency])
+                     [(conj deps dependency) nil]))
+                 [[] nil]
+                 deps)
+                first)))]
+      (debug "Dependencies after cleanup" \newline
+             (with-out-str (pprint (get p dependencies-key))))
+      p)))
 
 (defn- ensure-minimal-clojure-version
   "Assure that a minimum version of clojure is in the dependencies"
   [dependencies-key project]
-  (let [p (update-in
-           project [dependencies-key]
-           #(->>
-             %
-             (map
-              (fn [[artifact version :as dependency]]
-                (if (clojure? dependency)
-                  (let [[_ major minor]
-                        (re-matches #"([0-9]+)\.([0-9]+).*" version)]
-                    (if (and (= "1" major) (< (Integer/parseInt minor) 4))
-                      [artifact "1.4.0"]
-                      dependency))
-                  dependency)))
-             vec))]
-    (debug "Dependencies after minimal version check" (get p dependencies-key))
-    p))
+  (when (= dependencies-key :dependencies)
+    (let [p (update-in
+             project [dependencies-key]
+             #(->>
+               %
+               (map
+                (fn [[artifact version :as dependency]]
+                  (if (clojure? dependency)
+                    (let [[_ major minor]
+                          (re-matches #"([0-9]+)\.([0-9]+).*" version)]
+                      (if (and (= "1" major) (< (Integer/parseInt minor) 4))
+                        [artifact "1.4.0"]
+                        dependency))
+                    dependency)))
+               vec))]
+      (debug "Dependencies after minimal version check" \newline
+             (with-out-str (pprint (get p dependencies-key))))
+      p)))
 
 (defn remove-xpcom-ws-conflicts-wrapper
   [f dependencies-key project & rest]

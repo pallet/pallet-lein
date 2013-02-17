@@ -3,7 +3,7 @@
  (:require
   [leiningen.core.main :refer [debug]]
   [leiningen.core.eval :refer [eval-in-project]]
-  [leiningen.core.project :refer [make merge-profiles]]
+  [leiningen.core.project :refer [make merge-profiles set-profiles]]
   leiningen.test))
 
 (defmacro maybe-shutdown-agents
@@ -16,7 +16,7 @@
                  leiningen.test/*exit-after-tests*)
         (shutdown-agents)))))
 
-;; This profile will be added if there is no explicit :pallet profile.
+;; This profile will be added
 (defn pallet-profile [{:keys [pallet] :as project}]
   {:source-paths (:source-paths pallet ["pallet/src"])
    :resource-paths (:resource-paths pallet ["pallet/resources"])
@@ -41,7 +41,9 @@
     {:url "https://oss.sonatype.org/content/repositories/releases/"
      :snapshots false}}})
 
-(defn has-profile? [{:keys [profiles] :as project} profile-kw]
+(defn has-profile?
+  "Predicate to check if project has the specified profile."
+  [{:keys [profiles] :as project} profile-kw]
   (let [{:keys [included-profiles excluded-profiles active-profiles]}
         (meta project)
 
@@ -59,14 +61,19 @@
   "Launch pallet tasks from the command line.
    `lein pallet help` for more details."
   [project & args]
-  (let [project (or project
-                    (make
-                     {:name "pallet-lein" :group "pallet" :version "0.1.0"}))
-        project (merge-profiles
-                 project
-                 (conj
-                  (filter (partial has-profile? project) [:pallet])
-                  (pallet-profile project)))
+  (let [base (merge
+              (make {:name "pallet-lein" :group "pallet" :version "0.1.0"})
+              (select-keys project [:root]))
+        ;; add in any :pallet profile in the original project
+        base (update-in base [:profiles]
+                        merge (select-keys (:profiles project) [:base]))
+        ;; now apply :pallet profile, with :pallet and any other included
+        ;; profiles, with input from user and project level profiles.clj
+        project (set-profiles
+                 base
+                 (concat
+                  (:included-profiles (meta project))
+                  [:pallet (pallet-profile project)]))
         [project args] (if (and (map? project)
                                 (every?
                                  identity
@@ -83,10 +90,10 @@
                               (println
                                "Error loading pallet: " (.getMessage e#))
                               (println
-                               "You need to have pallet as a project")
-                              (println
-                               "dependency or installed in ~/.lein/plugins"))
-                            1))]
+                               (str "You need to have pallet as a project"
+                                    " dependency.")))
+                            (throw (ex-info "Pallet not found as a dependency"
+                                            {:exit-code 1}) e#)))]
              ;; If there was an error, then the return value is 1 and that is
              ;; returned.
              rv#
@@ -111,4 +118,7 @@
                  (binding [*out* *err*]
                    (println
                     "failed to resolve pallet.main/pallet-task"))))))]
+    (debug "Dependencies" (:dependencies project))
+    (debug "Source Paths" (:source-paths project))
+    (debug "Resource Paths" (:resource-paths project))
     (eval-in-project project main-form nil)))
