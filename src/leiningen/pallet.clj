@@ -106,7 +106,8 @@
                            (the-ns '~'pallet.main) '~'add-service)]
                    (when s#
                      ;; create a default vmfest provider
-                     (s# :vbox {:provider :vmfest}))
+                     (s# :vbox {:provider :vmfest})
+                     (s# :localhost {:provider :localhost}))
                    (m# (concat ["--project-options" ~project-str]
                                [~@args])
                        :environment env#))
