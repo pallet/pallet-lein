@@ -1,5 +1,23 @@
 # Release Notes
 
+## 0.6.0-beta.5
+
+- Update to pallet 0.8.0-beta.2
+
+- Add a transient localhost service
+
+- Adjust classpath setup
+  Ensure the original project.clj is not used as the base for running the
+  plugin.
+
+  Ensure profiles.clj profiles are applied correctly.
+
+  Allow explicit addition of profiles on the command line.
+
+  Moves log configuration to logback.xml to allow logback-test.xml in a
+  project to override this.
+
+
 ## 0.6.0-beta.4
 
 - Fix enforcement of either ws or xpcom
