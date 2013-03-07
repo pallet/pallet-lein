@@ -69,15 +69,16 @@
         ;; add in any :pallet profile in the original project
         base (update-in base [:profiles]
                         merge (select-keys (:profiles project) [:base :pallet]))
-        _ (debug "project is %s" project)
-        _ (debug "base is %s" base)
+        _ (debug "project is" project)
+        _ (debug "base is" base)
         ;; now apply :pallet profile, with :pallet and any other included
         ;; profiles, with input from user and project level profiles.clj
         project (set-profiles
                  base
                  (concat
                   (:included-profiles (meta project))
-                  [:pallet (pallet-profile project)]))
+                  [(pallet-profile project) :pallet]))
+        _ (debug "project with profiles is" project)
         [project args] (if (and (map? project)
                                 (every?
                                  identity
