@@ -61,12 +61,16 @@
   "Launch pallet tasks from the command line.
    `lein pallet help` for more details."
   [project & args]
-  (let [base (merge
-              (make {:name "pallet-lein" :group "pallet" :version "0.1.0"})
-              (select-keys project [:root]))
+  (let [base (vary-meta
+              (merge
+               (make {:name "pallet-lein" :group "pallet" :version "0.1.0"})
+               (select-keys project [:root]))
+              merge (meta project))
         ;; add in any :pallet profile in the original project
         base (update-in base [:profiles]
-                        merge (select-keys (:profiles project) [:base]))
+                        merge (select-keys (:profiles project) [:base :pallet]))
+        _ (debug "project is %s" project)
+        _ (debug "base is %s" base)
         ;; now apply :pallet profile, with :pallet and any other included
         ;; profiles, with input from user and project level profiles.clj
         project (set-profiles
