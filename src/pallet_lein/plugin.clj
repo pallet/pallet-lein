@@ -52,7 +52,7 @@ Assumes that these libs are only every present as direct dependencies."
                                   (debug "Ignoring" dependency "as" seen "seen")
                                   [deps seen]))
                          [(conj deps dependency) dependency])
-                       [(conj deps dependency) nil]))
+                       [(conj deps dependency) seen]))
                    [[] nil]
                    deps)
                   first)))]
