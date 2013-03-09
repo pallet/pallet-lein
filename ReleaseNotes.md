@@ -1,5 +1,19 @@
 # Release Notes
 
+## 0.6.0-beta.6
+
+- Update to pallet 0.8.0-beta.4
+
+- Fix dependency cleaning
+  Conflicting dependencies were only being removed when they appeared
+  sequentially in the :dependencies vector.
+
+- Make logging config more comprehensive
+
+- Fix hooks so plugins aren't clobbered
+  The hooks were returning nil for plugin dependencies, which meant plugins 
+  loaded via profiles were failing.
+
 ## 0.6.0-beta.5
 
 - Update to pallet 0.8.0-beta.2
