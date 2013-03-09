@@ -24,45 +24,47 @@ exclusive"
   "Remove conflicts between virtualbox xpcom and ws libs.
 Assumes that these libs are only every present as direct dependencies."
   [dependencies-key project]
-  (when (= dependencies-key :dependencies)
-    (debug "Dependencies before cleanup" \newline
-           (with-out-str (pprint (get project dependencies-key))))
-    (let [remove-dep (fn [dep s] (vec (remove #{dep} s)))
-          p (update-in
-             project [dependencies-key]
-             (fn check-dependencies [deps]
-               (->
-                (reduce
-                 (fn check-conflict [[deps seen] dependency]
-                   (if (or (xpcom? dependency) (ws? dependency))
-                     (if seen
-                       (cond
-                        (displace? seen)
-                        (do
-                          (debug seen "displaced by " dependency)
-                          [(conj (remove-dep seen deps) dependency) dependency])
+  (if (= dependencies-key :dependencies)
+    (do
+      (debug "Dependencies before cleanup" \newline
+             (with-out-str (pprint (get project dependencies-key))))
+      (let [remove-dep (fn [dep s] (vec (remove #{dep} s)))
+            p (update-in
+               project [dependencies-key]
+               (fn check-dependencies [deps]
+                 (->
+                  (reduce
+                   (fn check-conflict [[deps seen] dependency]
+                     (if (or (xpcom? dependency) (ws? dependency))
+                       (if seen
+                         (cond
+                          (displace? seen)
+                          (do
+                            (debug seen "displaced by " dependency)
+                            [(conj (remove-dep seen deps) dependency) dependency])
 
-                        (replace? dependency)
-                        (do
-                          (debug "Replacing" seen "with" dependency)
-                          [(conj (remove-dep seen deps) dependency) dependency])
+                          (replace? dependency)
+                          (do
+                            (debug "Replacing" seen "with" dependency)
+                            [(conj (remove-dep seen deps) dependency) dependency])
 
-                        :else (do
-                                (debug "Ignoring" dependency "as" seen "seen")
-                                [deps seen]))
-                       [(conj deps dependency) dependency])
-                     [(conj deps dependency) nil]))
-                 [[] nil]
-                 deps)
-                first)))]
-      (debug "Dependencies after cleanup" \newline
-             (with-out-str (pprint (get p dependencies-key))))
-      p)))
+                          :else (do
+                                  (debug "Ignoring" dependency "as" seen "seen")
+                                  [deps seen]))
+                         [(conj deps dependency) dependency])
+                       [(conj deps dependency) seen]))
+                   [[] nil]
+                   deps)
+                  first)))]
+        (debug "Dependencies after cleanup" \newline
+               (with-out-str (pprint (get p dependencies-key))))
+        p))
+    project))
 
 (defn- ensure-minimal-clojure-version
   "Assure that a minimum version of clojure is in the dependencies"
   [dependencies-key project]
-  (when (= dependencies-key :dependencies)
+  (if (= dependencies-key :dependencies)
     (let [p (update-in
              project [dependencies-key]
              #(->>
@@ -79,16 +81,18 @@ Assumes that these libs are only every present as direct dependencies."
                vec))]
       (debug "Dependencies after minimal version check" \newline
              (with-out-str (pprint (get p dependencies-key))))
-      p)))
+      p)
+    project))
 
 (defn remove-xpcom-ws-conflicts-wrapper
   [f dependencies-key project & rest]
-  (f dependencies-key (remove-xpcom-ws-conflicts dependencies-key project)))
+  (apply f dependencies-key (remove-xpcom-ws-conflicts dependencies-key project) rest))
 
 (defn ensure-minimal-clojure-version-wrapper
   [f dependencies-key project & rest]
-  (f dependencies-key
-     (ensure-minimal-clojure-version dependencies-key project)))
+  (apply f dependencies-key
+         (ensure-minimal-clojure-version dependencies-key project)
+         rest))
 
 (defn hooks []
   (add-hook #'resolve-dependencies remove-xpcom-ws-conflicts-wrapper)

@@ -20,7 +20,7 @@
 (defn pallet-profile [{:keys [pallet] :as project}]
   {:source-paths (:source-paths pallet ["pallet/src"])
    :resource-paths (:resource-paths pallet ["pallet/resources"])
-   :dependencies '[^:displace [com.palletops/pallet "0.8.0-beta.2"]
+   :dependencies '[^:displace [com.palletops/pallet "0.8.0-beta.4"]
                    ^:displace [org.cloudhoist/pallet-vmfest "0.3.0-alpha.2"]
                    ^:displace [org.clojars.tbatchelli/vboxjxpcom "4.2.4"]
                    ;; [org.clojars.tbatchelli/vboxjws "4.2.4"]
@@ -32,7 +32,7 @@
 
                    ;; we do this to get a logging configuration
                    ;; this needs some thinking about
-                   ^:displace [com.palletops/pallet-lein "0.6.0-beta.5"]
+                   ^:displace [com.palletops/pallet-lein "0.6.0-beta.6"]
                    ^:displace [ch.qos.logback/logback-classic "1.0.9"]]
    :jvm-opts ["-XX:TieredStopAtLevel=1"
               "-XX:+TieredCompilation"]
@@ -61,19 +61,24 @@
   "Launch pallet tasks from the command line.
    `lein pallet help` for more details."
   [project & args]
-  (let [base (merge
-              (make {:name "pallet-lein" :group "pallet" :version "0.1.0"})
-              (select-keys project [:root]))
+  (let [base (vary-meta
+              (merge
+               (make {:name "pallet-lein" :group "pallet" :version "0.1.0"})
+               (select-keys project [:root]))
+              merge (meta project))
         ;; add in any :pallet profile in the original project
         base (update-in base [:profiles]
-                        merge (select-keys (:profiles project) [:base]))
+                        merge (select-keys (:profiles project) [:base :pallet]))
+        _ (debug "project is" project)
+        _ (debug "base is" base)
         ;; now apply :pallet profile, with :pallet and any other included
         ;; profiles, with input from user and project level profiles.clj
         project (set-profiles
                  base
                  (concat
                   (:included-profiles (meta project))
-                  [:pallet (pallet-profile project)]))
+                  [(pallet-profile project) :pallet]))
+        _ (debug "project with profiles is" project)
         [project args] (if (and (map? project)
                                 (every?
                                  identity

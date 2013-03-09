@@ -21,7 +21,7 @@ You can override this by specifying `:source-paths` and `:resource-paths` in a
 project `:pallet` key.  For example:
 
 ```clj
-  :pallet {:source-paths ["src-pallet"] :resource-paths []}
+:pallet {:source-paths ["src-pallet"] :resource-paths []}
 ```
 
 ### Default Pallet Dependencies
@@ -30,7 +30,12 @@ The plugin uses a default set of dependencies that includes
 [vmfest](https://github.com/tbatchelli/vmfest/tree/develop).  This should enable
 use of VirtualBox with no configuration.  Note that this support is broken on
 linux, due to a bug in VirtualBox, and you will have to run the `vboxwebsrv`,
-and use the `vboxjws` dependency.
+and use the `vboxjws` dependency.  To use `vboxjws` add the following profile to
+your `project.clj` file.
+
+```clj
+:pallet {:dependencies [[org.virtualbox/vboxjws "4.2.6"]]}
+```
 
 ### Adjusting Pallet Dependencies
 
@@ -50,7 +55,7 @@ Add the plugin to your `:plugins`, either in the `:dev` profile of your
 `project.clj` file, or in the `:user` profile of your `~/.lein/profiles.clj`
 file.
 
-    :plugins [[com.palletops/pallet-lein "0.6.0-beta.5"]]
+    :plugins [[com.palletops/pallet-lein "0.6.0-beta.6"]]
 
 Requires lein 2.0.0 or higher.
 
