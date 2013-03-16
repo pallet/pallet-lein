@@ -34,8 +34,7 @@
                    ;; this needs some thinking about
                    ^:displace [com.palletops/pallet-lein "0.6.0-SNAPSHOT"]
                    ^:displace [ch.qos.logback/logback-classic "1.0.9"]]
-   :jvm-opts ["-XX:TieredStopAtLevel=1"
-              "-XX:+TieredCompilation"]
+   :jvm-opts ["-XX:+TieredCompilation"]
    :repositories
    {"sonatype"
     {:url "https://oss.sonatype.org/content/repositories/releases/"
