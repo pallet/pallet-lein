@@ -55,7 +55,7 @@ Add the plugin to your `:plugins`, either in the `:dev` profile of your
 `project.clj` file, or in the `:user` profile of your `~/.lein/profiles.clj`
 file.
 
-    :plugins [[com.palletops/pallet-lein "0.6.0-beta.6"]]
+    :plugins [[com.palletops/pallet-lein "0.6.0-beta.7"]]
 
 Requires lein 2.0.0 or higher.
 

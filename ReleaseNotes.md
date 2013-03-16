@@ -1,5 +1,12 @@
 # Release Notes
 
+## 0.6.0-beta.7
+
+- Update to pallet 0.8.0-beta.5
+
+- Remove TieredStopAtLevel option
+  Not supported on jdk 6
+
 ## 0.6.0-beta.6
 
 - Update to pallet 0.8.0-beta.4
