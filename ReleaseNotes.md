@@ -1,5 +1,11 @@
 # Release Notes
 
+## 0.6.0-beta.8
+
+- Update to pallet 0.8.0-beta.6
+
+- Remove sonatype from project.clj
+
 ## 0.6.0-beta.7
 
 - Update to pallet 0.8.0-beta.5
