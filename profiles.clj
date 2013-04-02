@@ -1,4 +1,4 @@
-{:dev {:dependencies [[org.cloudhoist/pallet "0.8.0-SNAPSHOT"]]
+{:dev {:dependencies [[com.palletops/pallet "0.8.0-SNAPSHOT"]]
        :plugins [[lein-set-version "0.3.0"]]}
  :release
  {:set-version

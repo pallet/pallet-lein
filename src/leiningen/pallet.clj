@@ -20,7 +20,7 @@
 (defn pallet-profile [{:keys [pallet] :as project}]
   {:source-paths (:source-paths pallet ["pallet/src"])
    :resource-paths (:resource-paths pallet ["pallet/resources"])
-   :dependencies '[^:displace [com.palletops/pallet "0.8.0-beta.5"]
+   :dependencies '[^:displace [com.palletops/pallet "0.8.0-beta.6"]
                    ^:displace [org.cloudhoist/pallet-vmfest "0.3.0-alpha.2"]
                    ^:displace [org.clojars.tbatchelli/vboxjxpcom "4.2.4"]
                    ;; [org.clojars.tbatchelli/vboxjws "4.2.4"]
@@ -32,7 +32,7 @@
 
                    ;; we do this to get a logging configuration
                    ;; this needs some thinking about
-                   ^:displace [com.palletops/pallet-lein "0.6.0-beta.7"]
+                   ^:displace [com.palletops/pallet-lein "0.6.0-beta.8"]
                    ^:displace [ch.qos.logback/logback-classic "1.0.9"]]
    :jvm-opts ["-XX:+TieredCompilation"]
    :repositories

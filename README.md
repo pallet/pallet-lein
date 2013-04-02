@@ -16,9 +16,10 @@ The task has a default set of pallet dependencies.  To override these, you can
 declare a `:pallet profile`, which will be preferred over the built in
 dependencies.
 
-The plugin adds `pallet/src` and `pallet/resources` to the project's classpath.
-You can override this by specifying `:source-paths` and `:resource-paths` in a
-project `:pallet` key.  For example:
+The plugin adds `pallet/src` to the leiningen `:source-paths` and
+`pallet/resources` to the project's `:resource-paths` (it preserves the paths
+you already have configured).  You can override this by specifying
+`:source-paths` and `:resource-paths` in a project `:pallet` key.  For example:
 
 ```clj
 :pallet {:source-paths ["src-pallet"] :resource-paths []}
@@ -55,7 +56,7 @@ Add the plugin to your `:plugins`, either in the `:dev` profile of your
 `project.clj` file, or in the `:user` profile of your `~/.lein/profiles.clj`
 file.
 
-    :plugins [[com.palletops/pallet-lein "0.6.0-beta.7"]]
+    :plugins [[com.palletops/pallet-lein "0.6.0-beta.8"]]
 
 Requires lein 2.0.0 or higher.
 
