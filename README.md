@@ -16,9 +16,10 @@ The task has a default set of pallet dependencies.  To override these, you can
 declare a `:pallet profile`, which will be preferred over the built in
 dependencies.
 
-The plugin adds `pallet/src` and `pallet/resources` to the project's classpath.
-You can override this by specifying `:source-paths` and `:resource-paths` in a
-project `:pallet` key.  For example:
+The plugin adds `pallet/src` to the leiningen `:source-paths` and
+`pallet/resources` to the project's `:resource-paths` (it preserves the paths
+you already have configured).  You can override this by specifying
+`:source-paths` and `:resource-paths` in a project `:pallet` key.  For example:
 
 ```clj
 :pallet {:source-paths ["src-pallet"] :resource-paths []}
