@@ -30,5 +30,5 @@
                :resource-path "resources"
                :test-path "test"
                :local-repo-classpath true
-               :project-root (System/getProperty "user.home")})
+               :root (System/getProperty "user.home")})
              "help"))))
