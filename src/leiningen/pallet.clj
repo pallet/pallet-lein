@@ -62,7 +62,8 @@
   [project & args]
   (let [base (vary-meta
               (merge
-               (make {:name "pallet-lein" :group "pallet" :version "0.1.0"})
+               (make {:name "pallet-lein" :group "pallet" :version "0.1.0"
+                      :root (System/getProperty "user.home")})
                (select-keys project [:root]))
               merge (meta project))
         ;; add in any :pallet profile in the original project
