@@ -1,5 +1,12 @@
 # Release Notes
 
+## 0.6.0-beta.9
+
+- Fix :root key in project map for lein 2.1.0+
+
+- Update pallet and pallet-vmfest
+  Update to pallet 0.8.0-beta.7, and pallet-vmfest 0.3.0-alpha.3
+
 ## 0.6.0-beta.8
 
 - Update to pallet 0.8.0-beta.6
