@@ -4,11 +4,17 @@
    [leiningen.core.project :refer [make]]
    [clojure.test :refer :all]))
 
+(def min-project
+  (make {:dependencies '[[org.clojure/clojure "1.4.0"]
+                         [com.palletops/pallet "0.8.0-RC.1"]
+                         [ch.qos.logback/logback-classic "1.0.9"]]
+         :prep-tasks []}))
+
 (deftest pallet-test
-  (is (nil? (pallet/pallet nil))))
+  (is (nil? (pallet/pallet min-project))))
 
 (deftest pallet-with-cmd-test
-  (is (nil? (pallet/pallet nil "help"))))
+  (is (nil? (pallet/pallet min-project "help"))))
 
 (deftest pallet-with-project-and-cmd-test
   (is (nil? (pallet/pallet
