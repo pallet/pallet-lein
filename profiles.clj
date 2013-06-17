@@ -1,6 +1,8 @@
 {:dev {:dependencies [[com.palletops/pallet "0.8.0-RC.1"]
                       [ch.qos.logback/logback-classic "1.0.9"]]
-       :plugins [[lein-set-version "0.3.0"]]}
+       :plugins [[lein-set-version "0.3.0"]
+                 [codox/codox.leiningen "0.6.4"]
+                 [lein-marginalia "0.7.1"]]}
  :test {:dependencies [[com.palletops/pallet "0.8.0-RC.1"]
                        [ch.qos.logback/logback-classic "1.0.9"]]
         :plugins [[lein-set-version "0.3.0"]]}
