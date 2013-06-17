@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.8.0-alpha.1
+
+- Remove classpath magic
+
 ## 0.6.0-beta.9
 
 - Fix :root key in project map for lein 2.1.0+
