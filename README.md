@@ -6,47 +6,57 @@ project.
 
 ## Usage
 
-A pallet deployment project needs to have pallet as a dependency.
+To uses the pallet-lein plugin you will need to have pallet as a
+project dependency.  The simplest way to achieve that is to add pallet
+to your `:dependencies` in your `project.clj` file.
 
 For a list of pallet tasks,
 
-    lein pallet help
+    $ lein pallet help
 
-The task has a default set of pallet dependencies.  To override these, you can
-declare a `:pallet profile`, which will be preferred over the built in
+Apart from pallet itself, you will need to add pallet crate
+dependencies, and pallet providers for clouds such as EC2, to your
 dependencies.
 
-The plugin adds `pallet/src` to the leiningen `:source-paths` and
-`pallet/resources` to the project's `:resource-paths` (it preserves the paths
-you already have configured).  You can override this by specifying
-`:source-paths` and `:resource-paths` in a project `:pallet` key.  For example:
+## Profiles
+
+Adding pallet to your project's dependencies is intrusive, so you probably
+want to add pallet via a profile in `project.clj`.
 
 ```clj
-:pallet {:source-paths ["src-pallet"] :resource-paths []}
+:profiles {:pallet {:dependencies [[com.palletops/pallet "0.8.0-RC.1"]]}}
 ```
 
-### Default Pallet Dependencies
+You can then invoke lein using `with-profile`:
 
-The plugin uses a default set of dependencies that includes
-[vmfest](https://github.com/tbatchelli/vmfest/tree/develop).  This should enable
-use of VirtualBox with no configuration.  Note that this support is broken on
-linux, due to a bug in VirtualBox, and you will have to run the `vboxwebsrv`,
-and use the `vboxjws` dependency.  To use `vboxjws` add the following profile to
-your `project.clj` file.
+    $ lein with-profile pallet pallet help
+
+If that gets to unwieldy, just define an alias, again in `project.clj`:
 
 ```clj
-:pallet {:dependencies [[org.virtualbox/vboxjws "4.2.6"]]}
+:aliases {"pallet" ["with-profile" "+pallet" "pallet"]}
 ```
 
-### Adjusting Pallet Dependencies
+    $ lein pallet help
 
-The plugin's pallet dependencies can be adjusted using the leiningen `:pallet`
-profile, either in your `project.clj` or `profiles.clj` files.  See the
+Using `with-profile +pallet` adds the dependencies from the `pallet`
+profile to your normal project dependencies.  To use only the pallet
+profile, without the default project dependencies, use `with-profile
+pallet`, without the `+`.
+
+Using an independent profile is also useful to separate out your
+pallet code from your application code.  For example, you can have
+separate source and resource directories:
+
+```clj
+:profiles {:pallet {:dependencies [[com.palletops/pallet "0.8.0-RC.1"]]
+                    :source-paths ["pallet/src"]
+                    :resource-paths ["pallet/resources"]}}
+```
+
+See the
 [leiningen documentation](https://github.com/technomancy/leiningen/blob/master/doc/PROFILES.md)
 for details on using profiles.
-
-Using this mechanism, you can add pallet crate dependencies, and providers for
-clouds such as EC2.
 
 ## Installation
 
